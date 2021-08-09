@@ -98,7 +98,7 @@ export default {
             }
         },
         async readFolder(item) {
-            this.$emit("loading", true);
+            this.$emit("loading", true);       
             let url = this.endpoints.list.url
                 .replace(new RegExp("{storage}", "g"), this.storage)
                 .replace(new RegExp("{path}", "g"), item.path);
@@ -109,7 +109,6 @@ export default {
             };
 
             let response = await this.axios.request(config);
-
             // eslint-disable-next-line require-atomic-updates
             item.children = response.data.map(item => {
                 if (item.type === "dir") {
@@ -117,7 +116,7 @@ export default {
                 }
                 return item;
             });
-
+            
             this.$emit("loading", false);
         },
         activeChanged(active) {

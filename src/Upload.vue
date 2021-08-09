@@ -95,7 +95,8 @@ export default {
         icons: Object,
         axios: Function,
         maxUploadFilesCount: { type: Number, default: 0 },
-        maxUploadFileSize: { type: Number, default: 0 }
+        maxUploadFileSize: { type: Number, default: 0 },
+        folder: Object
     },
     data() {
         return {
@@ -133,7 +134,9 @@ export default {
         },
 
         async add(event) {
+            console.log(event.target);
             let files = Array.from(event.target.files);
+            
             this.$emit("add-files", files);
             this.$refs.inputUpload.value = "";
         },
@@ -156,10 +159,11 @@ export default {
             let formData = new FormData();
 
             // files
+            console.log(this);
             for (let file of this.files) {
-                formData.append("files", file, file.name);
+                formData.append("files", file, file.name);                
             }
-
+      
             let url = this.endpoint.url
                 .replace(new RegExp("{storage}", "g"), this.storage)
                 .replace(new RegExp("{path}", "g"), this.path);
@@ -176,6 +180,7 @@ export default {
 
             this.uploading = true;
             let response = await this.axios.request(config);
+            console.log(response);
             this.uploading = false;
             this.$emit("uploaded");
         }
@@ -186,6 +191,7 @@ export default {
             immediate: true,
             async handler() {
                 this.loading = true;
+                console.log(this.files);
                 this.listItems = await this.filesMap(this.files);
                 this.loading = false;
             }

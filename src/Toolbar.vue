@@ -54,7 +54,7 @@
                 offset-y
             >
                 <template v-slot:activator="{ on }">
-                    <v-btn v-if="path" icon v-on="on" title="Create Folder">
+                    <v-btn  icon v-on="on" title="Create Folder">
                         <v-icon>mdi-folder-plus-outline</v-icon>
                     </v-btn>
                 </template>
@@ -69,7 +69,7 @@
                             color="success"
                             :disabled="!newFolderName"
                             depressed
-                            @click="mkdir"
+                            @click="mkdir(item)"
                         >Create Folder</v-btn>
                     </v-card-actions>
                 </v-card>
