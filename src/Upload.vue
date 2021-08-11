@@ -165,7 +165,7 @@ export default {
             }
       
             let url = this.endpoint.url
-                .replace(new RegExp("{storage}", "g"), this.storage)
+                .replace(new RegExp("{storage}", "g"), "Main")
                 .replace(new RegExp("{path}", "g"), this.path);
 
             let config = {

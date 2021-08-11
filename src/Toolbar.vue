@@ -1,26 +1,6 @@
 <template>
     <v-toolbar flat dense color="blue-grey lighten-5">
         <v-toolbar-items>
-            <v-menu offset-y v-if="storages.length > 1">
-                <template v-slot:activator="{ on }">
-                    <v-btn icon class="storage-select-button mr-3" v-on="on">
-                        <v-icon>mdi-arrow-down-drop-circle-outline</v-icon>
-                    </v-btn>
-                </template>
-                <v-list class="storage-select-list">
-                    <v-list-item
-                        v-for="(item, index) in storages"
-                        :key="index"
-                        :disabled="item.code === storageObject.code"
-                        @click="changeStorage(item.code)"
-                    >
-                        <v-list-item-icon>
-                            <v-icon v-text="item.icon"></v-icon>
-                        </v-list-item-icon>
-                        <v-list-item-title>{{ item.name }}</v-list-item-title>
-                    </v-list-item>
-                </v-list>
-            </v-menu>
             <v-btn text :input-value="path === '/'" @click="changePath('/')">
                 <v-icon class="mr-2">{{storageObject.icon}}</v-icon>
                 {{storageObject.name}}
@@ -143,7 +123,7 @@ export default {
         async mkdir() {
             this.$emit("loading", true);
             let url = this.endpoints.mkdir.url
-                .replace(new RegExp("{storage}", "g"), this.storage)
+                .replace(new RegExp("{storage}", "g"), "main")
                 .replace(new RegExp("{path}", "g"), this.path + this.newFolderName);
 
             let config = {
@@ -172,8 +152,27 @@ export default {
         font-size: 22px;
     }
 }
-*/
 
+   <v-menu offset-y v-if="storages.length > 1" >
+                <template v-slot:activator="{ on }">
+                    <v-btn icon class="storage-select-button mr-3" v-on="on">
+                        <v-icon>mdi-arrow-down-drop-circle-outline</v-icon>
+                    </v-btn>
+                </template>
+                <v-list class="storage-select-list">
+                    <v-list-item
+                        v-for="(item, index) in storages"
+                        :key="index"
+                        :disabled="item.code === storageObject.code"
+                        @click="changeStorage(item.code)"
+                    >
+                        <v-list-item-icon>
+                            <v-icon v-text="item.icon"></v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-title>{{ item.name }}</v-list-item-title>
+                    </v-list-item>
+                </v-list>
+            </v-menu>*/
 .storage-select-list .v-list-item--disabled {
     background-color: rgba(0, 0, 0, 0.25);
     color: #fff;

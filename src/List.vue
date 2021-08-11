@@ -172,7 +172,7 @@ export default {
       console.log(this)
       if (this.isDir) {
         let url = this.endpoints.list.url
-          .replace(new RegExp("{storage}", "g"), this.storage)
+          .replace(new RegExp("{storage}", "g"), "main")
           .replace(new RegExp("{path}", "g"), this.path);
 
         let config = {
@@ -201,7 +201,7 @@ export default {
         this.$emit("loading", true);
         if(item.type !==  "dir"){
         let url = this.endpoints.delete.url
-          .replace(new RegExp("{storage}", "g"), this.storage)
+          .replace(new RegExp("{storage}", "g"), "main")
           .replace(new RegExp("{Id}", "g"), item.Id);
 
         let config = {
@@ -213,9 +213,10 @@ export default {
         this.$emit("loading", false);
         }
         else{
+          console.log(item.path)
             let url = this.endpoints.dirdelete.url
-          .replace(new RegExp("{storage}", "g"), this.storage)
-          .replace(new RegExp("{Id}", "g"), item.Id);
+          .replace(new RegExp("{storage}", "g"), "main")
+          .replace(new RegExp("{path}", "g"), item.path);
 
         let config = {
           url,
@@ -231,7 +232,7 @@ export default {
     },
     async downloadItem(item) {
       let url = this.endpoints.download.url
-        .replace(new RegExp("{storage}", "g"), this.storage)
+        .replace(new RegExp("{storage}", "g"), "main")
            .replace(new RegExp("Id", "g"), item.Id);
         
         

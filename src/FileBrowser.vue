@@ -70,13 +70,13 @@ import Upload from "./Upload.vue";
 
 const availableStorages = [
     {
-        name: "Local",
-        code: "local",
+        name: "",
+        code: "",
         icon: "mdi-folder-multiple-outline"
     },
     {
-        name: "Amazon S3",
-        code: "s3",
+        name: "Main",
+        code: "Main",
         icon: "mdi-amazon-drive"
     }
     /*{
@@ -91,7 +91,7 @@ const endpoints = {
     upload: { url: "/storage/{storage}/upload?path={path}", method: "post" },
     mkdir: { url: "/storage/{storage}/mkdir?path={path}", method: "post" },
     delete: { url: "/storage/{storage}/delete{Id}", method: "delete" },
-    dirdelete: { url: "/storage/{storage}/dirdelete{Id}", method: "delete" },
+    dirdelete: { url: "/storage/{storage}/dirdelete?path={path}", method: "delete" },
     download: {url: "/storage/{storage}/download{Id}", method: "get"}
   
 };
@@ -136,7 +136,7 @@ export default {
             default: () => availableStorages.map(item => item.code).join(",")
         },
         // code of default storage
-        storage: { type: String, default: "local" },
+        storage: { type: String, default: "" },
         // show tree view
         tree: { type: Boolean, default: true },
         // file icons set

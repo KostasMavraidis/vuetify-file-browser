@@ -100,7 +100,7 @@ export default {
         async readFolder(item) {
             this.$emit("loading", true);       
             let url = this.endpoints.list.url
-                .replace(new RegExp("{storage}", "g"), this.storage)
+                .replace(new RegExp("{storage}", "g"), "Main")
                 .replace(new RegExp("{path}", "g"), item.path);
 
             let config = {
