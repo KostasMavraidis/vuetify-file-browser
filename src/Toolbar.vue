@@ -130,7 +130,6 @@ export default {
                 url,
                 method: this.endpoints.mkdir.method || "post"
             };
-
             await this.axios.request(config);
             this.$emit("folder-created", this.newFolderName);
             this.newFolderPopper = false;

@@ -159,13 +159,15 @@ export default {
             let formData = new FormData();
 
             // files
-            console.log(this);
+          
+        
             for (let file of this.files) {
+                  console.log(file);
                 formData.append("files", file, file.name);                
             }
-      
+
             let url = this.endpoint.url
-                .replace(new RegExp("{storage}", "g"), "Main")
+                .replace(new RegExp("{storage}", "g"), "main")
                 .replace(new RegExp("{path}", "g"), this.path);
 
             let config = {

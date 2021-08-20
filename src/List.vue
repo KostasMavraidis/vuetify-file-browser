@@ -34,12 +34,6 @@
             <v-btn icon v-if="false">
               <v-icon color="grey lighten-1">mdi-information</v-icon>
             </v-btn>
-            <v-btn icon @click.stop="downloadItem(item)">
-              <v-icon color="grey lighten-1">mdi-download-outline</v-icon>
-            </v-btn>
-            <v-btn icon v-if="false">
-              <v-icon color="grey lighten-1">mdi-information</v-icon>
-            </v-btn>
               </div>
           </v-list-item-action>
         </v-list-item>
@@ -67,8 +61,7 @@
           </v-list-item-content>
 
           <v-list-item-action>
-                     <div class="row q-col-gutter-sm items-center">
-          
+                     <div class="row q-col-gutter-sm items-center">       
                    <v-btn icon @click.stop="downloadItem(item)">
               <v-icon color="grey lighten-1">mdi-download-outline</v-icon>
             </v-btn>
@@ -77,6 +70,12 @@
             </v-btn>
               <v-btn icon @click.stop="deleteItem(item)">
               <v-icon color="grey lighten-1">mdi-delete-outline</v-icon>
+            </v-btn>
+            <v-btn icon v-if="false">
+              <v-icon color="grey lighten-1">mdi-information</v-icon>
+            </v-btn>
+              <v-btn icon @click.stop="shareItem(item)">
+              <v-icon color="grey lighten-1">mdi-share-variant-outline</v-icon>
             </v-btn>
             <v-btn icon v-if="false">
               <v-icon color="grey lighten-1">mdi-information</v-icon>
@@ -119,12 +118,25 @@
         <v-icon>mdi-refresh</v-icon>
       </v-btn>
     </v-toolbar>
+    <v-dialog v-model="dialog"  >
+
+       <email-finder
+          @closeDialog="(e)=>dialog=e"
+            :axios="axios"
+            :path="path"
+            :file="selectedItem"
+            :icons="icons"
+            :endpoints="endpoints"
+        ></email-finder>
+         </v-dialog>
   </v-card>
+  
 </template>
 
 <script>
 import { formatBytes } from "./util";
 import Confirm from "./Confirm.vue";
+import EmailFinder from "./EmailFinder.vue"
 
 export default {
   props: {
@@ -137,9 +149,12 @@ export default {
   },
   components: {
     Confirm,
+    EmailFinder
   },
   data() {
     return {
+      selectedItem: null,
+      dialog: false,
       items: [],
       filter: "",
     };
@@ -254,6 +269,11 @@ export default {
         var element = document.getElementById("link1");
            element.parentNode.removeChild(element);
 
+    },
+    async shareItem(item){ 
+      this.dialog=true;
+      this.selectedItem=item;
+          console.log(item);
     },
     base64ToArrayBuffer(base64) {
     var binaryString = window.atob(base64);
