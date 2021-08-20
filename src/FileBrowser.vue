@@ -57,6 +57,7 @@
             v-on:cancel="uploadingFiles = false"
             v-on:uploaded="uploaded"
         ></upload>
+     
     </v-card>
 </template>
 
@@ -67,6 +68,7 @@ import Toolbar from "./Toolbar.vue";
 import Tree from "./Tree.vue";
 import List from "./List.vue";
 import Upload from "./Upload.vue";
+
 
 const availableStorages = [
     {
@@ -92,7 +94,9 @@ const endpoints = {
     mkdir: { url: "/storage/{storage}/mkdir?path={path}", method: "post" },
     delete: { url: "/storage/{storage}/delete{Id}", method: "delete" },
     dirdelete: { url: "/storage/{storage}/dirdelete?path={path}", method: "delete" },
-    download: {url: "/storage/{storage}/download{Id}", method: "get"}
+    download: {url: "/storage/{storage}/download{Id}", method: "get"},
+    getEmail: {url: "/ShareFiles/GetFullNames/{Name}", method: "get"},
+    share: {url: "/ShareFiles/SendEmail", method: "post"}
   
 };
 
@@ -123,7 +127,7 @@ export default {
         Toolbar,
         Tree,
         List,
-        Upload
+        Upload,
     },
     model: {
         prop: "path",
@@ -184,6 +188,7 @@ export default {
             this.activeStorage = storage;
         },
         addUploadingFiles(files) {
+            console.log(files);
             files = Array.from(files);
 
             if (this.maxUploadFileSize) {
