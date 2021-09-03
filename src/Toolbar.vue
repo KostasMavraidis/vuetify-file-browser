@@ -49,7 +49,7 @@
                             color="success"
                             :disabled="!newFolderName"
                             depressed
-                            @click="mkdir(item)"
+                            @click="mkdir()"
                         >Create Folder</v-btn>
                     </v-card-actions>
                 </v-card>

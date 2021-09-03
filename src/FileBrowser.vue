@@ -23,9 +23,10 @@
                     v-on:path-changed="pathChanged"
                     v-on:loading="loadingChanged"
                     v-on:refreshed="refreshPending = false"
+                    v-on:item-changed="(e) => itemEmitted = e"
                 ></tree>
             </v-col>
-            <v-divider v-if="tree" vertical></v-divider>
+            <v-divider v-if="tree" vertical></v-divider>  
             <v-col>
                 <list
                     :path="path"
@@ -38,6 +39,7 @@
                     v-on:loading="loadingChanged"
                     v-on:refreshed="refreshPending = false"
                     v-on:file-deleted="refreshPending = true"
+                    :item="itemEmitted"
                 ></list>
             </v-col>
         </v-row>
@@ -57,7 +59,6 @@
             v-on:cancel="uploadingFiles = false"
             v-on:uploaded="uploaded"
         ></upload>
-     
     </v-card>
 </template>
 
@@ -96,8 +97,14 @@ const endpoints = {
     dirdelete: { url: "/storage/{storage}/dirdelete?path={path}", method: "delete" },
     download: {url: "/storage/{storage}/download{Id}", method: "get"},
     getEmail: {url: "/ShareFiles/GetFullNames/{Name}", method: "get"},
-    share: {url: "/ShareFiles/SendEmail", method: "post"}
-  
+    share: {url: "/ShareFiles/SendEmail", method: "post"},
+    file: {url: "/storage/{storage}/{id}", method: "get"},
+    getcategoriesAndTags: {url: "/CategoriesAndTags/GetFileTagsAndCategories/{Id}", method: "get"},
+    postCategoriesAndTags: {url: "/CategoriesAndTags/UpdateFile", method: "post"},
+    deleteFiles: {url: "/MoveCopyFiles/DeleteFiles", method: "post"},
+    moveFiles: {url: "/MoveCopyFiles/MoveFiles", method: "put"},
+    copyFiles: {url: "/MoveCopyFiles/CopyFiles", method: "post"},
+    getAllFoldersAsTree: {url: "MoveCopyFiles/AllFoldersAsTree", method: "get"},
 };
 
 const fileIcons = {
@@ -163,7 +170,8 @@ export default {
             activeStorage: null,
             uploadingFiles: false, // or an Array of files
             refreshPending: false,
-            axiosInstance: null
+            axiosInstance: null,
+            itemEmitted: null
         };
     },
     computed: {
@@ -188,7 +196,6 @@ export default {
             this.activeStorage = storage;
         },
         addUploadingFiles(files) {
-            console.log(files);
             files = Array.from(files);
 
             if (this.maxUploadFileSize) {
@@ -230,6 +237,3 @@ export default {
     }
 };
 </script>
-
-<style lang="scss" scoped>
-</style>

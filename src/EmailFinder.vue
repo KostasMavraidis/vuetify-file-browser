@@ -147,13 +147,10 @@ export default {
     select(val, prev) {
         if (prev!==null)
         {
-     //console.log(val);
-        ////console.log(prev);
       if (val.length === prev.length) return ;
         }
       this.select = val.map((v) => {
         if (typeof v === "string") {
-            //console.log(v);
           v = {
             text: v,
             value: v,
@@ -164,8 +161,6 @@ export default {
         }
         return v;
       });
-      //console.log(val);
-      //console.log(this.select);
     },
 
     //   })
@@ -173,8 +168,6 @@ export default {
     search(val) {
       this.currentValue = val;
       this.items = [];
-      //console.log(this.search);
-      //console.log(this.path);
       val && val !== this.select && this.querySelections(val);
     },
   },
@@ -182,8 +175,6 @@ export default {
     async querySelections(v) {
       this.loading = true;
       // Simulated ajax query
-
-      //console.log(this.endpoints);
       let url = this.endpoints.getEmail.url.replace(
         new RegExp("{Name}", "g"),
         v
@@ -192,9 +183,6 @@ export default {
         url,
         method: this.endpoints.getEmail.method || "get",
       };
-
-      //console.log(this.file);
-      //console.log(this.items);
       let response = await this.axios.request(config);
       for (var i of response.data) {
         var obj = {
@@ -212,7 +200,6 @@ export default {
 
         //this.items.text.push(o);
       }
-      //console.log(this.items);
 
       this.loading = false;
     },
@@ -222,7 +209,6 @@ export default {
     },
     Confirm() {
       for (var y = 0; y < this.select.length; y++) {
-        //console.log(this.select[y].value);
         if (
           this.select[y].value === this.select[y].text &&
           this.appearMessage === false
@@ -231,8 +217,6 @@ export default {
           return;
         }
       }
-      //console.log(this.select);
-
   
       var emails = [];
       for (var i = 0; i < this.select.length; i++) {
@@ -240,12 +224,10 @@ export default {
           emails.push(this.select[i].value);
         
       }
-
    
       this.dialog = false;
       this.appearMessage = false;
       this.ConfirmationMessageB = true;
-      //console.log(this.ConfirmationMessage);
     },
     copyText() {
       let textToCopy = this.$refs.textToCopy.$el.querySelector("input");
@@ -265,16 +247,12 @@ export default {
         },
       }).then(
         (response) => {
-          //console.log(response);
           if (response.data.length !== 0) {
             this.text1 = response.data[0].FileName;
-            //console.log(response.data[0].FileName);
           }
           if (response.statusText === "OK") {
-            //console.log(response.statusText);
             this.ConfirmationMessage = "The file was shared succesfully";
           } else {
-            //console.log(response.statusText);
             this.ConfirmationMessage = "Oops something went wrong";
           }
         },

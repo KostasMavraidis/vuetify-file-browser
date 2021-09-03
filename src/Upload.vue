@@ -1,5 +1,5 @@
 <template>
-    <v-overlay :absolute="true">
+    <v-overlay>
         <v-card flat light class="mx-auto" :loading="loading">
             <v-card-text class="py-3 text-center">
                 <div>
@@ -134,7 +134,6 @@ export default {
         },
 
         async add(event) {
-            console.log(event.target);
             let files = Array.from(event.target.files);
             
             this.$emit("add-files", files);
@@ -162,7 +161,6 @@ export default {
           
         
             for (let file of this.files) {
-                  console.log(file);
                 formData.append("files", file, file.name);                
             }
 
@@ -193,7 +191,6 @@ export default {
             immediate: true,
             async handler() {
                 this.loading = true;
-                console.log(this.files);
                 this.listItems = await this.filesMap(this.files);
                 this.loading = false;
             }

@@ -5,6 +5,8 @@ npm config set always-auth=true
 npm config set _auth nMXc1p8RP8cM9txo7vYh *the key should be at base 64. Use if you want at the given key function
 btoa(key) to the the requested key and then run the commnand.
 
+npm publish --reg http://proget.dotbydot.gr/npm/npm/
+
 Open source file manager component for Vue.js. Requires Vuetify v2.0 or higher.
 
 [💣 Demo](https://vuetify-file-browser-demo.herokuapp.com/) 
