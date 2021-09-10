@@ -65,7 +65,8 @@ export default {
         path: String,
         endpoints: Object,
         axios: Function,
-        refreshPending: Boolean
+        refreshPending: Boolean,
+        rootFolder: Object
     },
     data() {
         return {
@@ -77,21 +78,31 @@ export default {
         };
     },
     methods: {
+        makeTempInvisible() {
+            this.temporaryVisibility = false;
+        },
+        makeTempVisible() {
+            this.temporaryVisibility = true;
+        },
         init() {
             this.open = [];
             this.items = [];
+            this.temporaryVisibility = false;
             // set default files tree items (root item) in nextTick.
             // Otherwise this.open isn't cleared properly (due to syncing perhaps)
+            const rootFolder = this.rootFolder === undefined ? 
+                {
+                    type: "dir",
+                    path: "/",
+                    basename: "root",
+                    extension: "",
+                    name: "root",
+                    children: []
+                }: 
+                this.rootFolder;
             setTimeout(() => {
                 this.items = [
-                    {
-                        type: "dir",
-                        path: "/",
-                        basename: "root",
-                        extension: "",
-                        name: "root",
-                        children: []
-                    }
+                    rootFolder
                 ];
             }, 0);
             if (this.path !== "") {
@@ -99,7 +110,7 @@ export default {
             }
         },
         async readFolder(item) {
-            this.$emit("loading", true);       
+            this.$emit("loading", true);
             let url = this.endpoints.list.url
                 .replace(new RegExp("{storage}", "g"), "main")
                 .replace(new RegExp("{path}", "g"), item.path);
