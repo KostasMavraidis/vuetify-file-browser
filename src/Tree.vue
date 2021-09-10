@@ -45,7 +45,6 @@
                 prepend-inner-icon="mdi-filter-outline"
                 class="ml-n3"
             ></v-text-field>
-            
             <v-tooltip top>
                 <template v-slot:activator="{ on }">
                     <v-btn icon @click="init" v-on="on">
@@ -83,7 +82,6 @@ export default {
             this.items = [];
             // set default files tree items (root item) in nextTick.
             // Otherwise this.open isn't cleared properly (due to syncing perhaps)
-            
             setTimeout(() => {
                 this.items = [
                     {
@@ -101,7 +99,7 @@ export default {
             }
         },
         async readFolder(item) {
-            this.$emit("loading", true);
+            this.$emit("loading", true);       
             let url = this.endpoints.list.url
                 .replace(new RegExp("{storage}", "g"), "main")
                 .replace(new RegExp("{path}", "g"), item.path);

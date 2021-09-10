@@ -104,7 +104,7 @@ const endpoints = {
     deleteFiles: {url: "/MoveCopyFiles/DeleteFiles", method: "post"},
     moveFiles: {url: "/MoveCopyFiles/MoveFiles", method: "put"},
     copyFiles: {url: "/MoveCopyFiles/CopyFiles", method: "post"},
-    getAllFoldersAsTree: {url: "MoveCopyFiles/AllFoldersAsTree", method: "get"}
+    getAllFoldersAsTree: {url: "MoveCopyFiles/AllFoldersAsTree", method: "get"},
 };
 
 const fileIcons = {
