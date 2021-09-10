@@ -12,11 +12,12 @@
                     :input-value="index === pathSegments.length - 1"
                     :key="index + '-btn'"
                     @click="changePath(segment.path)"
-                >{{ segment.name }}</v-btn>
+                >
+                    {{ segment.name }}
+                </v-btn>
             </template>
         </v-toolbar-items>
         <div class="flex-grow-1"></div>
-
         <template v-if="$vuetify.breakpoint.smAndUp">
             <v-tooltip bottom v-if="pathSegments.length > 0">
                 <template v-slot:activator="{ on }">
@@ -69,7 +70,8 @@ export default {
         storage: String,
         path: String,
         endpoints: Object,
-        axios: Function
+        axios: Function,
+        rootFolder: Object
     },
     data() {
         return {
@@ -79,10 +81,10 @@ export default {
     },
     computed: {
         pathSegments() {
-            let path = "/",
+            let path = this.rootFolder.path, 
                 isFolder = this.path[this.path.length - 1] === "/",
                 segments = this.path.split("/").filter(item => item);
-
+            
             segments = segments.map((item, index) => {
                 path +=
                     item + (index < segments.length - 1 || isFolder ? "/" : "");
@@ -91,7 +93,6 @@ export default {
                     path
                 };
             });
-
             return segments;
         },
         storageObject() {

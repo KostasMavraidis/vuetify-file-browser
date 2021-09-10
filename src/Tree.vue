@@ -45,6 +45,7 @@
                 prepend-inner-icon="mdi-filter-outline"
                 class="ml-n3"
             ></v-text-field>
+            
             <v-tooltip top>
                 <template v-slot:activator="{ on }">
                     <v-btn icon @click="init" v-on="on">
@@ -65,8 +66,7 @@ export default {
         path: String,
         endpoints: Object,
         axios: Function,
-        refreshPending: Boolean,
-        rootFolder: Object
+        refreshPending: Boolean
     },
     data() {
         return {
@@ -78,31 +78,22 @@ export default {
         };
     },
     methods: {
-        makeTempInvisible() {
-            this.temporaryVisibility = false;
-        },
-        makeTempVisible() {
-            this.temporaryVisibility = true;
-        },
         init() {
             this.open = [];
             this.items = [];
-            this.temporaryVisibility = false;
             // set default files tree items (root item) in nextTick.
             // Otherwise this.open isn't cleared properly (due to syncing perhaps)
-            const rootFolder = this.rootFolder === undefined ? 
-                {
-                    type: "dir",
-                    path: "/",
-                    basename: "root",
-                    extension: "",
-                    name: "root",
-                    children: []
-                }: 
-                this.rootFolder;
+            
             setTimeout(() => {
                 this.items = [
-                    rootFolder
+                    {
+                        type: "dir",
+                        path: "/",
+                        basename: "root",
+                        extension: "",
+                        name: "root",
+                        children: []
+                    }
                 ];
             }, 0);
             if (this.path !== "") {

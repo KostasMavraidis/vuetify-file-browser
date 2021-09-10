@@ -1,6 +1,6 @@
 {
   "name": "dbd-file-broswer",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "Open source file manager component for Vue.js. Requires Vuetify v2.0 or higher",
   "main": "src/index.js",
   "scripts": {

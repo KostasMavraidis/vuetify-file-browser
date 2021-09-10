@@ -20,7 +20,6 @@
                     :endpoints="endpoints"
                     :axios="axiosInstance"
                     :refreshPending="refreshPending"
-                    :rootFolder="rootFolder"
                     v-on:path-changed="pathChanged"
                     v-on:loading="loadingChanged"
                     v-on:refreshed="refreshPending = false"
@@ -105,8 +104,7 @@ const endpoints = {
     deleteFiles: {url: "/MoveCopyFiles/DeleteFiles", method: "post"},
     moveFiles: {url: "/MoveCopyFiles/MoveFiles", method: "put"},
     copyFiles: {url: "/MoveCopyFiles/CopyFiles", method: "post"},
-    getAllFoldersAsTree: {url: "MoveCopyFiles/AllFoldersAsTree", method: "get"},
-    filesAndFolders: {url: "TemporaryFilesAndFolders/list/{path}/{showTemporary}", method: "get"}
+    getAllFoldersAsTree: {url: "MoveCopyFiles/AllFoldersAsTree", method: "get"}
 };
 
 const fileIcons = {
@@ -173,15 +171,7 @@ export default {
             uploadingFiles: false, // or an Array of files
             refreshPending: false,
             axiosInstance: null,
-            itemEmitted: null,
-            rootFolder: {
-                            type: "dir",
-                            path: "/Real Estate Benefits/",
-                            basename: "Real Estate Benefits",
-                            extension: "",
-                            name: "Real Estate Benefits",
-                            children: []
-                        }
+            itemEmitted: null
         };
     },
     computed: {
