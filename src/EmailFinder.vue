@@ -224,7 +224,7 @@ export default {
           emails.push(this.select[i].value);
         
       }
-   
+      this.axiosRequest(emails);
       this.dialog = false;
       this.appearMessage = false;
       this.ConfirmationMessageB = true;
@@ -240,7 +240,6 @@ export default {
         url: this.endpoints.share.url,
         data: {
           ShouldBeSent: this.checkbox,
-          contents: "",
           fileIds: [this.file.Id],
           receivers: a,
           expirationDate: `${this.date}`,

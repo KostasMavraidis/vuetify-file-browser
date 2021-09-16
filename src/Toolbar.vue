@@ -1,7 +1,7 @@
 <template>
     <v-toolbar flat dense color="blue-grey lighten-5">
         <v-toolbar-items>
-            <v-btn text :input-value="path === '/'" @click="changePath('/')">
+            <v-btn text :input-value="path === startingFolders[0].path" @click="changePath(startingFolders[0].path)">
                 <v-icon class="mr-2">{{storageObject.icon}}</v-icon>
                 {{storageObject.name}}
             </v-btn>
@@ -69,7 +69,8 @@ export default {
         storage: String,
         path: String,
         endpoints: Object,
-        axios: Function
+        axios: Function,
+        startingFolders: Array
     },
     data() {
         return {
@@ -79,19 +80,53 @@ export default {
     },
     computed: {
         pathSegments() {
-            let path = "/",
-                isFolder = this.path[this.path.length - 1] === "/",
-                segments = this.path.split("/").filter(item => item);
-
-            segments = segments.map((item, index) => {
-                path +=
-                    item + (index < segments.length - 1 || isFolder ? "/" : "");
-                return {
-                    name: item,
-                    path
-                };
-            });
-
+            if (this.startingFolders[0].path==="/") {
+                let path = "/";
+                let isFolder = this.path[this.path.length - 1] === "/";
+                let segments = this.path.split("/").filter(item => item);
+                segments = segments.map((item, index) => {
+                    path += item + (index < segments.length - 1 || isFolder ? "/" : "");
+                    return {
+                        name: item,
+                        path
+                    };
+                });
+                return segments;
+            }
+            //on the root folder's path, the place its name is lastly found gives us the relative path
+            const indexOfRoot = this.startingFolders[0].path.lastIndexOf(this.startingFolders[0].name);
+            //remove possible file at the end of the path to get the pure current folder path
+            let i;
+            for (i=this.path.length-1; i>=indexOfRoot; i--) {
+                if (this.path[i] == "/") {
+                    break;
+                }
+            }
+            let cleanPath = this.path==="/" ? "/" : this.path.substring(0, ++i);
+            //get the names of the folders up to the last
+            const pureNames = cleanPath.substring(indexOfRoot, cleanPath.length).split("/").filter(x=>x);
+            //remove the root folder as it is for some reason not wanted among the segments (in case of only the root, there are no segments)
+            if (pureNames.length > 0) {
+                pureNames.shift();
+            }
+            
+            let segmentPaths = [];
+            for (i=pureNames.length-1; i>=0; i--) {
+                let temp = `${this.startingFolders[0].path}`;
+                for (let j=0; j<=i; j++) {
+                    temp += pureNames[j] + "/";
+                }
+                segmentPaths.unshift(temp);
+            }
+            
+            let segments = [];
+            for (i=0; i<segmentPaths.length; i++){
+                segments.push({ 
+                    name: pureNames[i],
+                    path: segmentPaths[i]
+                });
+            }
+            
             return segments;
         },
         storageObject() {

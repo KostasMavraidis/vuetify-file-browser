@@ -127,7 +127,7 @@
                 <v-icon color="grey darken-1">mdi-delete-outline</v-icon>
               </v-btn>
               <v-btn icon @click.stop="shareItem(item)">
-                <v-icon color="grey darken-1">mdi-share-variant-outline</v-icon>
+                <v-icon color="grey darken-1">mdi-share-outline</v-icon>
               </v-btn>
 
               <v-btn
@@ -265,6 +265,8 @@ export default {
     axios: Function,
     refreshPending: Boolean,
     item: Object,
+    showTemporary: Boolean,
+    startingFolderPath: String
   },
   components: {
     Confirm,
@@ -334,17 +336,15 @@ export default {
       if (this.item) {
         this.selectedItem = this.item;
       }
-      console.log(this);
       if (this.isDir) {
-        let url = this.endpoints.list.url
-          .replace(new RegExp("{storage}", "g"), "main")
-          .replace(new RegExp("{path}", "g"), this.path);
-
+        const tempIsShown  = this.showTemporary === true;
+        let url = this.endpoints.getTemporaryFolders.url
+          .replace(new RegExp("{path}", "g"), this.path)
+          .replace(new RegExp("{showTemporary}", "g"), tempIsShown);
         let config = {
           url,
-          method: this.endpoints.list.method || "get",
+          method: this.endpoints.getTemporaryFolders.method || "get"
         };
-
         let response = await this.axios.request(config);
         this.items = response.data;
       } else {
@@ -507,6 +507,7 @@ export default {
       });
     },
     async moveItems() {
+      console.log("helllooooooo");
       await this.getAllFolders();
       this.moveItemsConfirmDialog = true;
     },
@@ -518,14 +519,24 @@ export default {
       this.foldersNeedUpdate = false;
     },
     async getAllFolders() {
-      let url = this.endpoints.getAllFoldersAsTree.url;
-      let config = {
-        url,
-        method: this.endpoints.getAllFoldersAsTree.method || "get",
-      };
-      let response = await this.axios.request(config);
+      console.log("starting folder path: ", this.startingFolderPath);
+      let response  = await this.axios.post(
+        this.endpoints.getAllFoldersAsTree.url,
+        {
+          Path: this.startingFolderPath
+        }
+      );
       this.allFoldersAsTree = response.data.tree;
       this.allFoldersAsList = response.data.list;
+      
+      // let url = this.endpoints.getAllFoldersAsTree.url;
+      // let config = {
+      //   url,
+      //   method: this.endpoints.getAllFoldersAsTree.method || "get",
+      // };
+      // let response = await this.axios.request(config);
+      // this.allFoldersAsTree = response.data.tree;
+      // this.allFoldersAsList = response.data.list;
     },
   },
   watch: {

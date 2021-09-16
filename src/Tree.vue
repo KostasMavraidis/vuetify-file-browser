@@ -1,5 +1,11 @@
 <template>
-    <v-card flat tile width="250" min-height="380" class="d-flex flex-column folders-tree-card">
+    <v-card
+        flat
+        tile
+        width="250"
+        min-height="380"
+        class="d-flex flex-column folders-tree-card"
+    >
         <div class="grow scroll-x">
             <v-treeview
                 :open="open"
@@ -16,20 +22,24 @@
                 class="folders-tree"
             >
                 <template v-slot:prepend="{ item, open }">
-                    <v-icon
-                        v-if="item.type === 'dir'"
-                    >{{ open ? 'mdi-folder-open-outline' : 'mdi-folder-outline' }}</v-icon>
-                    <v-icon v-else>{{ icons[item.extension.toLowerCase()] || icons['other'] }}</v-icon>
+                    <v-icon v-if="item.type === 'dir'">{{
+                        open ? "mdi-folder-open-outline" : "mdi-folder-outline"
+                    }}</v-icon>
+                    <v-icon v-else>{{
+                        icons[item.extension.toLowerCase()] || icons["other"]
+                    }}</v-icon>
                 </template>
                 <template v-slot:label="{ item }">
-                    {{item.basename}}
+                    {{ item.basename }}
                     <v-btn
                         icon
                         v-if="item.type === 'dir'"
                         @click.stop="readFolder(item)"
                         class="ml-1"
                     >
-                        <v-icon class="pa-0 mdi-18px" color="grey lighten-1">mdi-refresh</v-icon>
+                        <v-icon class="pa-0 mdi-18px" color="grey lighten-1"
+                            >mdi-refresh</v-icon
+                        >
                     </v-btn>
                 </template>
             </v-treeview>
@@ -65,7 +75,9 @@ export default {
         path: String,
         endpoints: Object,
         axios: Function,
-        refreshPending: Boolean
+        refreshPending: Boolean,
+        showTemporary: Boolean,
+        startingFolders: Array
     },
     data() {
         return {
@@ -77,36 +89,29 @@ export default {
         };
     },
     methods: {
-        init() {
+        async init() {
             this.open = [];
             this.items = [];
             // set default files tree items (root item) in nextTick.
             // Otherwise this.open isn't cleared properly (due to syncing perhaps)
             setTimeout(() => {
-                this.items = [
-                    {
-                        type: "dir",
-                        path: "/",
-                        basename: "root",
-                        extension: "",
-                        name: "root",
-                        children: []
-                    }
-                ];
+                this.items = this.startingFolders;
             }, 0);
             if (this.path !== "") {
                 this.$emit("path-changed", "");
             }
+            const item = { path: "/"};
+            await this.readFolder(item);
         },
         async readFolder(item) {
-            this.$emit("loading", true);       
-            let url = this.endpoints.list.url
-                .replace(new RegExp("{storage}", "g"), "main")
-                .replace(new RegExp("{path}", "g"), item.path);
-
+            this.$emit("loading", true);
+            const tempIsShown = this.showTemporary === true;
+            let url = this.endpoints.getTemporaryFolders.url
+                .replace(new RegExp("{path}", "g"), item.path)
+                .replace(new RegExp("{showTemporary}", "g"), tempIsShown);
             let config = {
                 url,
-                method: this.endpoints.list.method || "get"
+                method: this.endpoints.getTemporaryFolders.method || "get"
             };
 
             let response = await this.axios.request(config);
@@ -117,15 +122,17 @@ export default {
                 }
                 return item;
             });
-            
+
             this.$emit("loading", false);
         },
         activeChanged(active) {
             this.active = active;
-
-            let item = this.findItem(this.active);
-            if (item.type === 'dir') {
-                item = null;
+            var item = null;
+            if (this.active.length > 0) {
+                item = this.findItem(this.active);
+                if (item.type === "dir") {
+                    item = null;
+                }
             }
 
             let path = "";
@@ -163,7 +170,7 @@ export default {
                 this.open.push(this.path);
             }
         },
-        async refreshPending(){
+        async refreshPending() {
             if (this.refreshPending) {
                 let item = this.findItem(this.path);
                 await this.readFolder(item);
@@ -171,8 +178,10 @@ export default {
             }
         }
     },
-    created() {
-        this.init();
+    async created() {
+        await this.init();
+        const path = this.startingFolders[0].path;
+        this.active = [path];
     }
 };
 </script>

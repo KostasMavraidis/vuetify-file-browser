@@ -6,6 +6,7 @@
             :storage="activeStorage"
             :endpoints="endpoints"
             :axios="axiosInstance"
+            :startingFolders="startingFolders"
             v-on:storage-changed="storageChanged"
             v-on:path-changed="pathChanged"
             v-on:add-files="addUploadingFiles"
@@ -20,13 +21,15 @@
                     :endpoints="endpoints"
                     :axios="axiosInstance"
                     :refreshPending="refreshPending"
+                    :showTemporary="showTemporary"
+                    :startingFolders="startingFolders"
                     v-on:path-changed="pathChanged"
                     v-on:loading="loadingChanged"
                     v-on:refreshed="refreshPending = false"
                     v-on:item-changed="(e) => itemEmitted = e"
                 ></tree>
             </v-col>
-            <v-divider v-if="tree" vertical></v-divider>  
+            <v-divider v-if="tree" vertical></v-divider>
             <v-col>
                 <list
                     :path="path"
@@ -35,6 +38,8 @@
                     :endpoints="endpoints"
                     :axios="axiosInstance"
                     :refreshPending="refreshPending"
+                    :showTemporary="showTemporary"
+                    :startingFolderPath="startingFolderPath"
                     v-on:path-changed="pathChanged"
                     v-on:loading="loadingChanged"
                     v-on:refreshed="refreshPending = false"
@@ -104,7 +109,8 @@ const endpoints = {
     deleteFiles: {url: "/MoveCopyFiles/DeleteFiles", method: "post"},
     moveFiles: {url: "/MoveCopyFiles/MoveFiles", method: "put"},
     copyFiles: {url: "/MoveCopyFiles/CopyFiles", method: "post"},
-    getAllFoldersAsTree: {url: "MoveCopyFiles/AllFoldersAsTree", method: "get"},
+    getAllFoldersAsTree: {url: "MoveCopyFiles/AllFoldersAsTree", method: "post"},
+    getTemporaryFolders: {url: "TemporaryFilesAndFolders/FoldersAndFiles/{showTemporary}?path={path}", method: "get"}
 };
 
 const fileIcons = {
@@ -161,7 +167,9 @@ export default {
         // max files count to upload at once. Unlimited by default
         maxUploadFilesCount: { type: Number, default: 0 },
         // max file size to upload. Unlimited by default
-        maxUploadFileSize: { type: Number, default: 0 }
+        maxUploadFileSize: { type: Number, default: 0 },
+        showTemporary: {type: Boolean, default: false },
+        startingFolderPath: { type: String, default: "/" }
     },
     data() {
         return {
@@ -182,6 +190,28 @@ export default {
                 result.push(availableStorages.find(item => item.code == code));
             });
             return result;
+        },
+        startingFolders() {
+            if (this.startingFolderPath === "/") {
+                return [{
+                    type: "dir",
+                    path: "/",
+                    basename: "root",
+                    extension: "",
+                    name: "root",
+                    children: []
+                }];
+            }
+            const tempArray = this.startingFolderPath.split("/").filter(x=>x);
+            const basename = tempArray[tempArray.length-1];
+            return [{
+                type: "dir",
+                path: this.startingFolderPath,
+                basename: basename,
+                extension: "",
+                name: basename,
+                children: []
+            }];
         }
     },
     methods: {
@@ -232,7 +262,7 @@ export default {
     },
     mounted() {
         if (!this.path && !(this.tree && this.$vuetify.breakpoint.smAndUp)) {
-            this.pathChanged("/");
+            this.pathChanged(this.startingFolders[0].path);
         }
     }
 };
